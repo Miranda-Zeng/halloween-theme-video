@@ -1,0 +1,82 @@
+// This is a test of the p5LiveMedia webrtc library and associated service.
+// Open this sketch up 2 times to send video back and forth
+
+let myVideo;
+let otherVideo;
+let theRoom;
+
+connect.addEventListener('click', function(e) {
+    connectionStuff(roomName.value)
+})
+
+function setup() {
+  cnv = createCanvas(800, 400);
+    cnv.parent(videoStuff)
+}
+
+let constraints = {
+  audio: true,
+  video: true
+}
+
+navigator.mediaDevices
+    .enumerateDevices()
+    .then((devices) => {
+      devices.forEach((device) => {
+        let audioDevice = document.getElementById("deviceOption");
+        if (device.kind === "audioinput"){
+        let option = document.createElement("option");
+        option.value = device.deviceId;
+        option.textContent = device.label;
+        audioDevice.appendChild(option);
+        }
+        console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
+      });
+      
+    })
+
+
+
+function connectionStuff(roomName) {
+    myVideo = createCapture(constraints, 
+      function(stream) {
+        let p5l = new p5LiveMedia(this, "CAPTURE", stream, roomName);
+        p5l.on('stream', gotStream);
+      }
+    );  
+    myVideo.muted = true;     
+    myVideo.hide();
+}
+
+
+function draw() {
+  background(220);
+  // stroke(255);
+  if (myVideo != null) {
+    image(myVideo,0,0,width/2,height);
+    // text("My Video", 10, 10);
+  }
+
+  if (otherVideo != null) {
+    image(otherVideo,width/2,0,width/2,height);
+    // text("Their Video", width/2+10, 10);
+  }  
+  filter(INVERT);
+
+  noFill();
+  stroke("#F28C28");
+  strokeWeight(10);
+
+  rect(0, 0, width/2, height);
+  rect(width/2, 0, width/2, height);
+
+  
+}
+
+// We got a new stream!
+function gotStream(stream, id) {
+  // This is just like a video/stream from createCapture(VIDEO)
+  otherVideo = stream;
+  //otherVideo.id and id are the same and unique identifiers
+  otherVideo.hide();
+}
