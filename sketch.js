@@ -23,14 +23,14 @@ navigator.mediaDevices
     .enumerateDevices()
     .then((devices) => {
       devices.forEach((device) => {
+        console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
         let audioDevice = document.getElementById("deviceOption");
         if (device.kind === "audioinput"){
         let option = document.createElement("option");
         option.value = device.deviceId;
         option.textContent = device.label;
         audioDevice.appendChild(option);
-        }
-        console.log(`${device.kind}: ${device.label} id = ${device.deviceId}`);
+        }     
       });
       
     })

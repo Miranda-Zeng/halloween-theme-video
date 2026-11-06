@@ -20,6 +20,11 @@ body, html {
     gap: 10px;
     width: 50%;
 }
+
+#connect{
+    background-color: #F28C28;
+}
+
 #roomStuff{
     display: flex;
     gap: 0px;    
